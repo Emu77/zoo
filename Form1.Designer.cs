@@ -1,4 +1,5 @@
 
+
 namespace Zooverwaltung
 {
     partial class Form1
@@ -18,7 +19,7 @@ namespace Zooverwaltung
 
         private void InitializeComponent()
         {
-            tabFütterungen = new TabControl();
+            tabPflegerZuordnung = new TabControl();
             tabKontinent = new TabPage();
             btnKontinentLoeschen = new Button();
             btnKontinentSpeichern = new Button();
@@ -40,6 +41,8 @@ namespace Zooverwaltung
             txtTierartBez = new TextBox();
             label4 = new Label();
             tabTiere = new TabPage();
+            button2 = new Button();
+            button1 = new Button();
             btnTierLoeschen = new Button();
             btnTierSpeichern = new Button();
             lstTiere = new ListBox();
@@ -78,10 +81,52 @@ namespace Zooverwaltung
             tabUebersicht = new TabPage();
             dgvUebersicht = new DataGridView();
             tabFuetterungen = new TabPage();
+            button3 = new Button();
             Fütterungen = new Label();
             dgvFütterungen = new DataGridView();
             cboUebersichtTier = new ComboBox();
-            tabFütterungen.SuspendLayout();
+            tabPflege = new TabPage();
+            rbOhnePfleger = new RadioButton();
+            rbOhneHauptpfleger = new RadioButton();
+            rbAlleGehege = new RadioButton();
+            btnEntfernen = new Button();
+            btnZuweisen = new Button();
+            chkHauptpfleger = new CheckBox();
+            cboZuordnungPfleger = new ComboBox();
+            dgvBetreuer = new DataGridView();
+            cboZuordnungGehege = new ComboBox();
+            label17 = new Label();
+            Datum = new DataGridViewTextBoxColumn();
+            Zeit = new DataGridViewTextBoxColumn();
+            Wer = new DataGridViewTextBoxColumn();
+            Was = new DataGridViewTextBoxColumn();
+            Wieviel = new DataGridViewTextBoxColumn();
+            // Datum
+            Datum.Name = "Datum";
+            Datum.HeaderText = "Datum";
+            Datum.DataPropertyName = "Datum";
+
+            // Zeit
+            Zeit.Name = "Uhrzeit";
+            Zeit.HeaderText = "Zeit";
+            Zeit.DataPropertyName = "Uhrzeit";
+
+            // Wer
+            Wer.Name = "TierName";
+            Wer.HeaderText = "Wer";
+            Wer.DataPropertyName = "TierName";
+
+            // Was
+            Was.Name = "FutterName";
+            Was.HeaderText = "Was";
+            Was.DataPropertyName = "FutterName";
+
+            // Wieviel
+            Wieviel.Name = "Menge";
+            Wieviel.HeaderText = "Wieviel";
+            Wieviel.DataPropertyName = "Menge";
+
+            tabPflegerZuordnung.SuspendLayout();
             tabKontinent.SuspendLayout();
             tabGehege.SuspendLayout();
             tabTierart.SuspendLayout();
@@ -92,24 +137,27 @@ namespace Zooverwaltung
             ((System.ComponentModel.ISupportInitialize)dgvUebersicht).BeginInit();
             tabFuetterungen.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvFütterungen).BeginInit();
+            tabPflege.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvBetreuer).BeginInit();
             SuspendLayout();
             // 
-            // tabFütterungen
+            // tabPflegerZuordnung
             // 
-            tabFütterungen.Controls.Add(tabKontinent);
-            tabFütterungen.Controls.Add(tabGehege);
-            tabFütterungen.Controls.Add(tabTierart);
-            tabFütterungen.Controls.Add(tabTiere);
-            tabFütterungen.Controls.Add(tabFutter);
-            tabFütterungen.Controls.Add(tabRationen);
-            tabFütterungen.Controls.Add(tabUebersicht);
-            tabFütterungen.Controls.Add(tabFuetterungen);
-            tabFütterungen.Dock = DockStyle.Fill;
-            tabFütterungen.Location = new Point(0, 0);
-            tabFütterungen.Name = "tabFütterungen";
-            tabFütterungen.SelectedIndex = 0;
-            tabFütterungen.Size = new Size(900, 500);
-            tabFütterungen.TabIndex = 0;
+            tabPflegerZuordnung.Controls.Add(tabKontinent);
+            tabPflegerZuordnung.Controls.Add(tabGehege);
+            tabPflegerZuordnung.Controls.Add(tabTierart);
+            tabPflegerZuordnung.Controls.Add(tabTiere);
+            tabPflegerZuordnung.Controls.Add(tabFutter);
+            tabPflegerZuordnung.Controls.Add(tabRationen);
+            tabPflegerZuordnung.Controls.Add(tabUebersicht);
+            tabPflegerZuordnung.Controls.Add(tabFuetterungen);
+            tabPflegerZuordnung.Controls.Add(tabPflege);
+            tabPflegerZuordnung.Dock = DockStyle.Fill;
+            tabPflegerZuordnung.Location = new Point(0, 0);
+            tabPflegerZuordnung.Name = "tabPflegerZuordnung";
+            tabPflegerZuordnung.SelectedIndex = 0;
+            tabPflegerZuordnung.Size = new Size(900, 500);
+            tabPflegerZuordnung.TabIndex = 0;
             // 
             // tabKontinent
             // 
@@ -319,6 +367,8 @@ namespace Zooverwaltung
             // 
             // tabTiere
             // 
+            tabTiere.Controls.Add(button2);
+            tabTiere.Controls.Add(button1);
             tabTiere.Controls.Add(btnTierLoeschen);
             tabTiere.Controls.Add(btnTierSpeichern);
             tabTiere.Controls.Add(lstTiere);
@@ -339,6 +389,26 @@ namespace Zooverwaltung
             tabTiere.TabIndex = 3;
             tabTiere.Text = "Tiere";
             tabTiere.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(234, 305);
+            button2.Name = "button2";
+            button2.Size = new Size(122, 29);
+            button2.TabIndex = 14;
+            button2.Text = "XML Import";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(114, 305);
+            button1.Name = "button1";
+            button1.Size = new Size(119, 26);
+            button1.TabIndex = 13;
+            button1.Text = "XML Export";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // btnTierLoeschen
             // 
@@ -703,6 +773,7 @@ namespace Zooverwaltung
             // 
             // tabFuetterungen
             // 
+            tabFuetterungen.Controls.Add(button3);
             tabFuetterungen.Controls.Add(Fütterungen);
             tabFuetterungen.Controls.Add(dgvFütterungen);
             tabFuetterungen.Controls.Add(cboUebersichtTier);
@@ -713,6 +784,15 @@ namespace Zooverwaltung
             tabFuetterungen.TabIndex = 7;
             tabFuetterungen.Text = "Fütterungen";
             tabFuetterungen.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(214, 422);
+            button3.Name = "button3";
+            button3.Size = new Size(144, 23);
+            button3.TabIndex = 3;
+            button3.Text = "nach Excel esportieren";
+            button3.UseVisualStyleBackColor = true;
             // 
             // Fütterungen
             // 
@@ -726,11 +806,14 @@ namespace Zooverwaltung
             // 
             // dgvFütterungen
             // 
+            dgvFütterungen.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvFütterungen.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvFütterungen.Columns.AddRange(new DataGridViewColumn[] { Datum, Zeit, Wer, Was, Wieviel });
             dgvFütterungen.Location = new Point(24, 44);
             dgvFütterungen.Name = "dgvFütterungen";
             dgvFütterungen.Size = new Size(850, 359);
             dgvFütterungen.TabIndex = 1;
+            //dgvFütterungen.CellContentClick += dgvFütterungen_CellContentClick;
             // 
             // cboUebersichtTier
             // 
@@ -740,16 +823,167 @@ namespace Zooverwaltung
             cboUebersichtTier.Size = new Size(121, 23);
             cboUebersichtTier.TabIndex = 0;
             // 
+            // tabPflege
+            // 
+            tabPflege.Controls.Add(rbOhnePfleger);
+            tabPflege.Controls.Add(rbOhneHauptpfleger);
+            tabPflege.Controls.Add(rbAlleGehege);
+            tabPflege.Controls.Add(btnEntfernen);
+            tabPflege.Controls.Add(btnZuweisen);
+            tabPflege.Controls.Add(chkHauptpfleger);
+            tabPflege.Controls.Add(cboZuordnungPfleger);
+            tabPflege.Controls.Add(dgvBetreuer);
+            tabPflege.Controls.Add(cboZuordnungGehege);
+            tabPflege.Controls.Add(label17);
+            tabPflege.Location = new Point(4, 24);
+            tabPflege.Name = "tabPflege";
+            tabPflege.Padding = new Padding(3);
+            tabPflege.Size = new Size(892, 472);
+            tabPflege.TabIndex = 8;
+            tabPflege.Text = "Pflege";
+            tabPflege.UseVisualStyleBackColor = true;
+            // 
+            // rbOhnePfleger
+            // 
+            rbOhnePfleger.AutoSize = true;
+            rbOhnePfleger.Location = new Point(223, 309);
+            rbOhnePfleger.Name = "rbOhnePfleger";
+            rbOhnePfleger.Size = new Size(135, 19);
+            rbOhnePfleger.TabIndex = 9;
+            rbOhnePfleger.TabStop = true;
+            rbOhnePfleger.Text = "Gehege ohne Pfleger";
+            rbOhnePfleger.UseVisualStyleBackColor = true;
+            rbOhnePfleger.CheckedChanged += rbAlleGehege_CheckedChanged;
+            // 
+            // rbOhneHauptpfleger
+            // 
+            rbOhneHauptpfleger.AutoSize = true;
+            rbOhneHauptpfleger.Location = new Point(223, 285);
+            rbOhneHauptpfleger.Name = "rbOhneHauptpfleger";
+            rbOhneHauptpfleger.Size = new Size(168, 19);
+            rbOhneHauptpfleger.TabIndex = 8;
+            rbOhneHauptpfleger.TabStop = true;
+            rbOhneHauptpfleger.Text = "Gehege ohne Hauptpfleger";
+            rbOhneHauptpfleger.UseVisualStyleBackColor = true;
+            rbOhneHauptpfleger.CheckedChanged += rbAlleGehege_CheckedChanged;
+            // 
+            // rbAlleGehege
+            // 
+            rbAlleGehege.AutoSize = true;
+            rbAlleGehege.Location = new Point(223, 261);
+            rbAlleGehege.Name = "rbAlleGehege";
+            rbAlleGehege.Size = new Size(86, 19);
+            rbAlleGehege.TabIndex = 7;
+            rbAlleGehege.TabStop = true;
+            rbAlleGehege.Text = "alle Gehege";
+            rbAlleGehege.UseVisualStyleBackColor = true;
+            rbAlleGehege.CheckedChanged += rbAlleGehege_CheckedChanged;
+            // 
+            // btnEntfernen
+            // 
+            btnEntfernen.Location = new Point(334, 341);
+            btnEntfernen.Name = "btnEntfernen";
+            btnEntfernen.Size = new Size(75, 23);
+            btnEntfernen.TabIndex = 6;
+            btnEntfernen.Text = "Entfernen";
+            btnEntfernen.UseVisualStyleBackColor = true;
+            btnEntfernen.Click += btnEntfernen_Click;
+            // 
+            // btnZuweisen
+            // 
+            btnZuweisen.Location = new Point(226, 338);
+            btnZuweisen.Name = "btnZuweisen";
+            btnZuweisen.Size = new Size(75, 23);
+            btnZuweisen.TabIndex = 5;
+            btnZuweisen.Text = "Zuweisen";
+            btnZuweisen.UseVisualStyleBackColor = true;
+            btnZuweisen.Click += btnZuweisen_Click;
+            // 
+            // chkHauptpfleger
+            // 
+            chkHauptpfleger.AutoSize = true;
+            chkHauptpfleger.Location = new Point(63, 340);
+            chkHauptpfleger.Name = "chkHauptpfleger";
+            chkHauptpfleger.Size = new Size(96, 19);
+            chkHauptpfleger.TabIndex = 4;
+            chkHauptpfleger.Text = "Hauptpfleger";
+            chkHauptpfleger.UseVisualStyleBackColor = true;
+            // 
+            // cboZuordnungPfleger
+            // 
+            cboZuordnungPfleger.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboZuordnungPfleger.FormattingEnabled = true;
+            cboZuordnungPfleger.Location = new Point(59, 279);
+            cboZuordnungPfleger.Name = "cboZuordnungPfleger";
+            cboZuordnungPfleger.Size = new Size(121, 23);
+            cboZuordnungPfleger.TabIndex = 3;
+            // 
+            // dgvBetreuer
+            // 
+            dgvBetreuer.AllowUserToAddRows = false;
+            dgvBetreuer.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvBetreuer.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBetreuer.Location = new Point(44, 75);
+            dgvBetreuer.Name = "dgvBetreuer";
+            dgvBetreuer.ReadOnly = true;
+            dgvBetreuer.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvBetreuer.Size = new Size(240, 150);
+            dgvBetreuer.TabIndex = 2;
+            // 
+            // cboZuordnungGehege
+            // 
+            cboZuordnungGehege.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboZuordnungGehege.FormattingEnabled = true;
+            cboZuordnungGehege.Location = new Point(174, 9);
+            cboZuordnungGehege.Name = "cboZuordnungGehege";
+            cboZuordnungGehege.Size = new Size(121, 23);
+            cboZuordnungGehege.TabIndex = 1;
+            cboZuordnungGehege.SelectedIndexChanged += cboZuordnungGehege_SelectedIndexChanged;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new Point(53, 10);
+            label17.Name = "label17";
+            label17.Size = new Size(106, 15);
+            label17.TabIndex = 0;
+            label17.Text = "Gehege auswählen";
+            // 
+            // Datum
+            // 
+            Datum.HeaderText = "Datum";
+            Datum.Name = "Datum";
+            // 
+            // Zeit
+            // 
+            Zeit.HeaderText = "Zeit";
+            Zeit.Name = "Zeit";
+            // 
+            // Wer
+            // 
+            Wer.HeaderText = "Wer";
+            Wer.Name = "Wer";
+            // 
+            // Was
+            // 
+            Was.HeaderText = "Was";
+            Was.Name = "Was";
+            // 
+            // Wieviel
+            // 
+            Wieviel.HeaderText = "Wieviel";
+            Wieviel.Name = "Wieviel";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(900, 500);
-            Controls.Add(tabFütterungen);
+            Controls.Add(tabPflegerZuordnung);
             Name = "Form1";
             Text = "Zooverwaltung (erweitert mit Futter)";
             Load += Form1_Load;
-            tabFütterungen.ResumeLayout(false);
+            tabPflegerZuordnung.ResumeLayout(false);
             tabKontinent.ResumeLayout(false);
             tabKontinent.PerformLayout();
             tabGehege.ResumeLayout(false);
@@ -767,13 +1001,22 @@ namespace Zooverwaltung
             tabFuetterungen.ResumeLayout(false);
             tabFuetterungen.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvFütterungen).EndInit();
+            tabPflege.ResumeLayout(false);
+            tabPflege.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvBetreuer).EndInit();
             ResumeLayout(false);
+
+        }
+
+        private void lstKontinente_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // TODO: später implementieren
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabFütterungen;
+        private System.Windows.Forms.TabControl tabPflegerZuordnung;
         private System.Windows.Forms.TabPage tabKontinent;
         private System.Windows.Forms.Button btnKontinentLoeschen;
         private System.Windows.Forms.Button btnKontinentSpeichern;
@@ -836,5 +1079,24 @@ namespace Zooverwaltung
         private ComboBox cboUebersichtTier;
         private Label Fütterungen;
         private DataGridView dgvFütterungen;
+        private Button button1;
+        private Button button2;
+        private TabPage tabPflege;
+        private DataGridView dgvBetreuer;
+        private ComboBox cboZuordnungGehege;
+        private Label label17;
+        private CheckBox chkHauptpfleger;
+        private ComboBox cboZuordnungPfleger;
+        private Button btnEntfernen;
+        private Button btnZuweisen;
+        private RadioButton rbOhnePfleger;
+        private RadioButton rbOhneHauptpfleger;
+        private RadioButton rbAlleGehege;
+        private Button button3;
+        private DataGridViewTextBoxColumn Datum;
+        private DataGridViewTextBoxColumn Zeit;
+        private DataGridViewTextBoxColumn Wer;
+        private DataGridViewTextBoxColumn Was;
+        private DataGridViewTextBoxColumn Wieviel;
     }
 }

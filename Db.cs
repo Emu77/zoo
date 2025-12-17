@@ -7,7 +7,8 @@ namespace Zooverwaltung
     {
         // Bitte anpassen an deine MySQL-Installation
         private static string connString =
-            "Server=localhost;Database=zoodb;Uid=root;Pwd=;";
+            "server=localhost;database=zoodb;user=zoo_user;password=;"
+;
 
         public static MySqlConnection GetConnection()
         {

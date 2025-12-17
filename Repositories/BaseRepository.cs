@@ -2,10 +2,21 @@
 
 namespace Zooverwaltung.Repositories
 {
-    public abstract class BaseRepository
+    public class BaseRepository
     {
-        // Zentrale DB-Verbindung – nur hier ändern!
-        protected const string ConnectionString =
-            "server=localhost;uid=root;pwd=;database=zoo;";
+        protected MySqlConnection connection;
+
+        private const string connectionString =
+    "server=localhost;database=zoodb;user=zoo_user;password=;Allow User Variables=True;";
+
+
+
+
+
+        public BaseRepository()
+        {
+            connection = new MySqlConnection(connectionString);
+            connection.Open();
+        }
     }
 }

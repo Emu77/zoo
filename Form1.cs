@@ -1,19 +1,22 @@
-
-using System;
-using System.Windows.Forms;
+using System.Xml;
 using Zooverwaltung.Models;
 using Zooverwaltung.Repositories;
+
 
 namespace Zooverwaltung
 {
     public partial class Form1 : Form
     {
+        private readonly FutterplanRepository _futterplanRepo = new FutterplanRepository();
         private readonly KontinentRepository kontinentRepo = new KontinentRepository();
         private readonly GehegeRepository gehegeRepo = new GehegeRepository();
         private readonly TierartRepository tierartRepo = new TierartRepository();
         private readonly TierRepository tierRepo = new TierRepository();
         private readonly FutterRepository futterRepo = new FutterRepository();
         private readonly FutterrationRepository futterrationRepo = new FutterrationRepository();
+        private readonly BetreutRepository betreutRepo = new BetreutRepository();
+        private readonly PflegerRepository pflegerRepo = new PflegerRepository();
+
 
         private Kontinent selectedKontinent;
         private Gehege selectedGehege;
@@ -21,14 +24,41 @@ namespace Zooverwaltung
         private Tier selectedTier;
         private Futter selectedFutter;
 
+
         public Form1()
         {
             InitializeComponent();
         }
 
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            LoadKontinente();
+            try
+            {
+                LoadKontinente();
+                LoadGehege();
+                LoadTierarten();
+                LoadTiere();
+                LoadFutter();
+                LoadRationCombos();
+                LoadUebersicht();
+                LoadUebersichtCombos();
+
+                LoadFütterungen();
+                FormatDgvFütterungen();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Fehler beim Laden");
+            }
+        }
+
+
+
+
+
+        LoadKontinente();
             LoadGehege();
             LoadTierarten();
             LoadTiere();
@@ -37,7 +67,9 @@ namespace Zooverwaltung
             LoadUebersicht();
             LoadUebersichtCombos();
             LoadUebersicht();
-
+            LoadPflegerZuordnung();
+            rbAlleGehege.Checked = true;
+            FilterGehege();
         }
 
         // ===== Kontinente =====
@@ -48,7 +80,7 @@ namespace Zooverwaltung
             lstKontinente.DisplayMember = "Kbezeichnung";
         }
 
-        private void lstKontinente_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstKontinente_SelectedIndexCommitted(object sender, EventArgs e)
         {
             selectedKontinent = lstKontinente.SelectedItem as Kontinent;
             if (selectedKontinent == null) return;
@@ -100,7 +132,7 @@ namespace Zooverwaltung
             cboGehegeKontinent.ValueMember = "kID";
         }
 
-        private void lstGehege_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstGehege_SelectedIndexCommitted(object sender, EventArgs e)
         {
             selectedGehege = lstGehege.SelectedItem as Gehege;
             if (selectedGehege == null) return;
@@ -422,6 +454,213 @@ namespace Zooverwaltung
             cboUebersichtTier.DisplayMember = "Name";
             cboUebersichtTier.ValueMember = "TierID";
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // XML-Datei erzeugen
+            XmlTextWriter myXmlTextWriter = new XmlTextWriter("Export.xml", System.Text.Encoding.UTF8);
+            myXmlTextWriter.Formatting = Formatting.Indented;
+            myXmlTextWriter.WriteStartDocument(false);
+
+            // Haupttag Init
+            myXmlTextWriter.WriteStartElement("Init");
+
+            foreach (Tier t in lstTiere.Items)
+            {
+
+                myXmlTextWriter.WriteStartElement("Tier", null);
+                myXmlTextWriter.WriteAttributeString("Name", t.Name);
+                myXmlTextWriter.WriteAttributeString("Gewicht", t.Gewicht.ToString("0.##"));
+                myXmlTextWriter.WriteAttributeString("GebDat", t.Geburtsdatum.ToString("dd.MM.yyyy"));
+
+                myXmlTextWriter.WriteEndElement();
+
+            }
+
+            myXmlTextWriter.WriteEndElement();
+            myXmlTextWriter.Flush();
+            myXmlTextWriter.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load("Export.xml");
+
+            XmlNodeList tiere = doc.SelectNodes("//Tier");
+
+            int importCount = 0;
+
+            foreach (XmlNode node in tiere)
+            {
+                // Attribute lesen
+                string name = node.Attributes["Name"]?.Value;
+                string gewichtStr = node.Attributes["Gewicht"]?.Value;
+                string gebdatStr = node.Attributes["GebDat"]?.Value;
+
+                // Validierung
+                if (string.IsNullOrWhiteSpace(name)) continue;
+                if (!double.TryParse(gewichtStr, out double gewicht)) continue;
+                if (!DateTime.TryParse(gebdatStr, out DateTime gebdat)) continue;
+
+                // Tier erzeugen
+                Tier tier = new Tier
+                {
+                    Name = name,
+                    Gewicht = gewicht,
+                    Geburtsdatum = gebdat,
+                    TierartID = 1,   // Default!
+                    GehegeID = 1     // Default!
+                };
+
+                // In DB speichern
+                tierRepo.Insert(tier);
+                importCount++;
+            }
+
+            MessageBox.Show(
+                $"{importCount} Tiere erfolgreich importiert!",
+                "XML-Import",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+
+            // UI aktualisieren
+            LoadTiere();
+            LoadUebersicht();
+            LoadRationCombos();
+        }
+
+
+
+
+
+
+
+        private void LoadPflegerZuordnung()
+        {
+            cboZuordnungGehege.DataSource = gehegeRepo.GetAll();
+            cboZuordnungGehege.DisplayMember = "GBezeichnung";
+            cboZuordnungGehege.ValueMember = "gID";
+
+            cboZuordnungPfleger.DataSource = pflegerRepo.GetAll();
+            cboZuordnungPfleger.DisplayMember = "Name";
+            cboZuordnungPfleger.ValueMember = "PflegerID";
+        }
+        private void cboZuordnungGehege_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadBetreuerGrid();
+        }
+
+        private void LoadBetreuerGrid()
+        {
+            if (cboZuordnungGehege.SelectedValue == null)
+                return;
+
+            int gehegeId = Convert.ToInt32(cboZuordnungGehege.SelectedValue);
+
+            dgvBetreuer.DataSource = betreutRepo.GetByGehege(gehegeId);
+        }
+
+
+        private void btnZuweisen_Click(object sender, EventArgs e)
+        {
+            if (cboZuordnungGehege.SelectedItem is not Gehege g) return;
+            if (cboZuordnungPfleger.SelectedItem is not Pfleger p) return;
+
+            int gehegeId = g.gID;
+            int pflegerId = p.PflegerID;
+
+            var vorhandene = betreutRepo.GetByGehege(gehegeId);
+
+            if (vorhandene.Count >= 2)
+            {
+                MessageBox.Show("Ein Gehege darf maximal 2 Pfleger haben.");
+                return;
+            }
+
+            if (chkHauptpfleger.Checked)
+                betreutRepo.ClearHauptpfleger(gehegeId);
+
+            betreutRepo.Insert(new Betreut
+            {
+                GehegeID = gehegeId,
+                PflegerID = pflegerId,
+                Hauptpfleger = chkHauptpfleger.Checked
+            });
+
+            LoadBetreuerGrid();
+        }
+
+        private void btnEntfernen_Click(object sender, EventArgs e)
+        {
+            if (dgvBetreuer.SelectedRows.Count == 0) return;
+
+            int gehegeId = (int)cboZuordnungGehege.SelectedValue;
+            int pflegerId = (int)dgvBetreuer.SelectedRows[0]
+                .Cells["PflegerID"].Value;
+
+            betreutRepo.Delete(gehegeId, pflegerId);
+            LoadBetreuerGrid();
+        }
+        private void lstGehege_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // vorerst leer oder Logik hier rein
+        }
+
+        private void rbAlleGehege_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterGehege();
+        }
+        private void FilterGehege()
+        {
+            List<Gehege> gehege;
+
+            if (rbOhnePfleger.Checked)
+            {
+                gehege = gehegeRepo.GetOhnePfleger();
+            }
+            else if (rbOhneHauptpfleger.Checked)
+            {
+                gehege = gehegeRepo.GetOhneHauptpfleger();
+            }
+            else
+            {
+                gehege = gehegeRepo.GetAll();
+            }
+
+            cboZuordnungGehege.DataSource = gehege;
+            cboZuordnungGehege.DisplayMember = "GBezeichnung";
+            cboZuordnungGehege.ValueMember = "gID";
+            cboZuordnungGehege.SelectedIndex = -1;
+        }
+
+
+        private void LoadFütterungen(int tierId = 0)
+        {
+            dgvFütterungen.AutoGenerateColumns = false;
+            dgvFütterungen.DataSource = _futterplanRepo.GetOverview(tierId);
+        }
+
+
+        private void FormatDgvFütterungen()
+        {
+            dgvFütterungen.Columns["Wer"].DataPropertyName = "TierName";
+            dgvFütterungen.Columns["Was"].DataPropertyName = "FutterName";
+            dgvFütterungen.Columns["Wieviel"].DataPropertyName = "Menge";
+            dgvFütterungen.Columns["Datum"].DataPropertyName = "Datum";
+            dgvFütterungen.Columns["Zeit"].DataPropertyName = "Uhrzeit";
+
+            dgvFütterungen.Columns["Wer"].HeaderText = "Tier";
+            dgvFütterungen.Columns["Was"].HeaderText = "Futter";
+            dgvFütterungen.Columns["Wieviel"].HeaderText = "Menge";
+            dgvFütterungen.Columns["Datum"].HeaderText = "Datum";
+            dgvFütterungen.Columns["Zeit"].HeaderText = "Zeit";
+
+            dgvFütterungen.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+
 
     }
 }
